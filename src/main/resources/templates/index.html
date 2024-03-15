@@ -1,0 +1,33 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>To do list </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+<table class="mx-auto w-11/12 max-w-screen-lg bg-white border border-gray-200 rounded-md shadow-md">
+    <thead class="bg-green-500 text-white text-lg">
+    <tr>
+        <th class="px-4 py-2">TodoID</th>
+        <th class="px-4 py-2">Task</th>
+        <th class="px-4 py-2">Description</th>
+        <th class="px-4 py-2">IsDone</th>
+        <th class="px-4 py-2">CreateAt</th>
+        <th class="px-4 py-2" colspan="3">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="todo : ${todoList}" class="border-t border-gray-200">
+        <td class="px-4 py-2" th:text="${todo.toDoID}"></td>
+        <td class="px-4 py-2" th:text="${todo.task}"></td>
+        <td class="px-4 py-2" th:text="${todo.description}"></td>
+        <td class="px-4 py-2" th:text="${todo.isDone}"></td>
+        <td class="px-4 py-2" th:text="${todo.createAt}"></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
