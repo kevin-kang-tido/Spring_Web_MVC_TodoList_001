@@ -2,6 +2,8 @@ package co.istad.mcvhomework.model;
 
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Data
 @ToString
 @AllArgsConstructor
@@ -11,6 +13,8 @@ public class Todo {
     private  String task;
     private  String description ;
     private  Boolean isDone;
-    private  String CreateAt;
+    private LocalDate createAt;
+
+
 
 }
