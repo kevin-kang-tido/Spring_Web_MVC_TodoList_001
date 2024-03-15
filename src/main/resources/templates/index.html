@@ -5,9 +5,10 @@
     <meta charset="UTF-8">
     <title>To do list </title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../path/to/flowbite/dist/flowbite.min.js"></script>
 </head>
 <body class="bg-gray-100">
-<table class="mx-auto w-11/12 max-w-screen-lg bg-white border border-gray-200 rounded-md shadow-md">
+<table class="mx-auto mt-8 w-11/12 max-w-screen-lg bg-white border border-gray-200 rounded-md shadow-md">
     <thead class="bg-green-500 text-white text-lg">
     <tr>
         <th class="px-2 py-4">TodoID</th>
@@ -25,6 +26,19 @@
         <td class="px-4 py-2" th:text="${todo.description}"></td>
         <td class="px-4 py-2" th:text="${todo.isDone}"></td>
         <td class="px-4 py-2" th:text="${todo.createAt}"></td>
+        <td class="px-4 py-2">
+            <a th:href="@{/new}" class="text-blue-700 hover:text-blue-900">
+                <button type="button" class="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Add</button>
+            </a>
+            <a th:href="@{/edit/{id}(id=${todo.toDoID})}" class="text-blue-700 hover:text-blue-900">
+                <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</button>
+            </a>
+            <a th:href="@{/delete/{id}(id=${todo.toDoID})}"  class="text-blue-700 hover:text-blue-900">
+                <button type="button" class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Delete</button>
+            </a>
+
+        </td>
+
     </tr>
     </tbody>
 </table>

@@ -1,6 +1,7 @@
 package co.istad.mcvhomework.model;
 
 import lombok.*;
+import org.apache.el.stream.Stream;
 
 import java.time.LocalDate;
 
@@ -14,7 +15,5 @@ public class Todo {
     private  String description ;
     private  Boolean isDone;
     private LocalDate createAt;
-
-
 
 }
