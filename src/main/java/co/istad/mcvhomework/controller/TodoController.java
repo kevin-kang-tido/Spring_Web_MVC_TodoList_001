@@ -2,6 +2,8 @@ package co.istad.mcvhomework.controller;
 
 import co.istad.mcvhomework.model.Todo;
 import co.istad.mcvhomework.respository.TodoListRepository;
+import co.istad.mcvhomework.service.TodoService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.config.Task;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,9 +15,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Controller
+@RequiredArgsConstructor
 public class TodoController {
-
     private static final TodoListRepository todoListRepository = new TodoListRepository();
+    private final TodoService todoService;
     //catch all data from the that created
     @GetMapping("/")
     public String index(Model model){
@@ -25,30 +28,7 @@ public class TodoController {
     // search task in url , and isDone as well
     @GetMapping("/search")
     public String search(@RequestParam(required = false) String task , @RequestParam(required = false) Boolean isDone, Model model){
-        List<Todo> tasks = todoListRepository.getFromList();
-
-        // Stream the tasks
-        Stream<Todo
-                > taskStream = tasks.stream();
-
-        // Apply the task filter if the task parameter is present
-        if (task != null && !task.isEmpty()) {
-            taskStream = taskStream.filter(e -> e.getTask().contains(task));
-        }
-
-        // Apply the isDone filter if the isDone parameter is present
-        if (isDone != null) {
-            taskStream = taskStream.filter(e -> e.getIsDone() == isDone);
-        }
-
-        // Collect the filtered tasks into a list
-        List<Todo> searchTasks = taskStream.collect(Collectors.toList());
-
-        // Add the filtered tasks to the model
-        model.addAttribute("todoList", searchTasks);
-
-
-        return "index";
+       return todoService.searchingService(task,isDone,model);
     }
     @GetMapping("/new")
     public String createShow(Model model){
@@ -56,15 +36,8 @@ public class TodoController {
         return "create";
     }
     @PostMapping("/new")
-    public String create(@ModelAttribute Todo todo){
-//        todo = new Todo();
-        todo.setCreateAt(LocalDate.now());
-        todo.setToDoID(todo.getToDoID());
-        todo.setTask(todo.getTask());
-        todo.setDescription(todo.getDescription());
-        todo.setIsDone(false);
-        todoListRepository.getFromList().add(todo);
-        return "redirect:/";
+    public String create(@ModelAttribute Todo todo, Model model ){
+        return todoService.createService(todo, model);
     }
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable int id, Model model) {
@@ -77,7 +50,8 @@ public class TodoController {
     }
     @PostMapping("/edit")
     public String editUser(@ModelAttribute Todo todo) {
-        todoListRepository.getFromList().stream()
+        todoListRepository.getFromList()
+                .stream()
                 .filter(u -> u.getToDoID().equals(todo.getToDoID()))
                 .findFirst()
                 .ifPresent(u -> {
@@ -87,7 +61,6 @@ public class TodoController {
                 });
         return "redirect:/";
     }
-
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable int id){
