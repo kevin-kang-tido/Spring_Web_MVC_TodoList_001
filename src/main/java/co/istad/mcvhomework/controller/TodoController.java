@@ -2,14 +2,15 @@ package co.istad.mcvhomework.controller;
 
 import co.istad.mcvhomework.model.Todo;
 import co.istad.mcvhomework.respository.TodoListRepository;
+import org.springframework.scheduling.config.Task;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 public class TodoController {
@@ -19,6 +20,34 @@ public class TodoController {
     @GetMapping("/")
     public String index(Model model){
         model.addAttribute("todoList",todoListRepository.getFromList());
+        return "index";
+    }
+    // search task in url , and isDone as well
+    @GetMapping("/search")
+    public String search(@RequestParam(required = false) String task , @RequestParam(required = false) Boolean isDone, Model model){
+        List<Todo> tasks = todoListRepository.getFromList();
+
+        // Stream the tasks
+        Stream<Todo
+                > taskStream = tasks.stream();
+
+        // Apply the task filter if the task parameter is present
+        if (task != null && !task.isEmpty()) {
+            taskStream = taskStream.filter(e -> e.getTask().contains(task));
+        }
+
+        // Apply the isDone filter if the isDone parameter is present
+        if (isDone != null) {
+            taskStream = taskStream.filter(e -> e.getIsDone() == isDone);
+        }
+
+        // Collect the filtered tasks into a list
+        List<Todo> searchTasks = taskStream.collect(Collectors.toList());
+
+        // Add the filtered tasks to the model
+        model.addAttribute("todoList", searchTasks);
+
+
         return "index";
     }
     @GetMapping("/new")
@@ -38,13 +67,12 @@ public class TodoController {
         return "redirect:/";
     }
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable String id, Model model) {
-        todoListRepository.getFromList()
+    public String showEditForm(@PathVariable int id, Model model) {
+       var editedTodo=   todoListRepository.getFromList()
                 .stream()
                 .filter(u -> u.getToDoID().equals(id))
-                .findFirst()
-                .orElse(null);
-        model.addAttribute("todo", new Todo());
+                .findFirst();
+        model.addAttribute("todo", editedTodo);
         return "edit";
     }
     @PostMapping("/edit")
@@ -60,10 +88,13 @@ public class TodoController {
         return "redirect:/";
     }
 
+
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable String id){
+    public String delete(@PathVariable int id){
+//        System.out.println("This is the value fo the id : "+id);
         todoListRepository.getFromList().removeIf(u -> u.getToDoID().equals(id));
         return "redirect:/";
      }
+
 
 }
